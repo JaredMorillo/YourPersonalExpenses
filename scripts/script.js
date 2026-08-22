@@ -1,5 +1,5 @@
 const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-const defaultProfile = { goal: 1500, salary: 2500, transactions: [] };
+const defaultProfile = { goal: 1500, salary: 0, transactions: [] };
 
 const getCurrentAccount = async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -20,7 +20,7 @@ const getCurrentProfile = async () => {
 
   return {
     goal: Number(profile?.goal) || defaultProfile.goal,
-    salary: Number(profile?.salary) || defaultProfile.salary,
+    salary: profile?.salary == null ? defaultProfile.salary : Number(profile.salary),
     transactions: Array.isArray(transactions) ? transactions : []
   };
 };
