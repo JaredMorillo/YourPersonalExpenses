@@ -103,3 +103,42 @@ a {
   margin: 10px 0 0;
   color: #f8a5a5;
 }
+
+@media (max-width: 600px) {
+  body {
+    padding: 16px;
+  }
+
+  .auth-shell {
+    width: 100%;
+  }
+
+  .auth-card {
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .password-field {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .toggle-password,
+  form > button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding: 10px;
+  }
+
+  .auth-card {
+    padding: 20px 14px;
+  }
+}

@@ -347,9 +347,36 @@ h1 {
   text-align: center;
 }
 
+@media (max-width: 1024px) {
+  .app-shell {
+    padding: 24px 16px 40px;
+  }
+
+  .topbar {
+    align-items: stretch;
+  }
+
+  .header-controls {
+    justify-content: stretch;
+  }
+
+  .header-controls > .nav-link {
+    flex: 1 1 180px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-card,
+  .panel,
+  .goal-progress-panel {
+    padding: 20px;
+  }
+}
+
 @media (max-width: 760px) {
   .topbar,
-  .goal-input-row,
   .lists-grid,
   .form-grid,
   .stats-grid {
@@ -363,13 +390,75 @@ h1 {
 
   .header-controls {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .header-controls > .nav-link {
+    flex: none;
   }
 
   .goal-box {
     min-width: 0;
+    grid-column: 1 / -1;
   }
 
   .goal-input-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .goal-input-row .secondary-btn {
+    min-width: 92px;
+  }
+
+  .goal-progress-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .transaction-item {
+    align-items: flex-start;
+  }
+
+  .item-meta {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-shell {
+    padding: 20px 12px 32px;
+  }
+
+  .stat-card,
+  .panel,
+  .goal-progress-panel {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .header-controls,
+  .goal-input-row {
     grid-template-columns: 1fr;
+  }
+
+  .goal-box {
+    grid-column: auto;
+  }
+
+  .goal-input-row .secondary-btn {
+    width: 100%;
+  }
+
+  .transaction-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-meta {
+    width: 100%;
+    justify-items: start;
   }
 }

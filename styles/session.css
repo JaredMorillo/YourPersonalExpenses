@@ -212,6 +212,21 @@ h1 {
   color: var(--muted);
 }
 
+@media (max-width: 1024px) {
+  .page-shell {
+    padding: 24px 16px 40px;
+  }
+
+  .summary-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 20px;
+  }
+}
+
 @media (max-width: 700px) {
   .topbar,
   .header-actions {
@@ -221,5 +236,36 @@ h1 {
 
   .summary-cards {
     grid-template-columns: 1fr;
+  }
+
+  .header-actions,
+  .header-actions > * {
+    width: 100%;
+  }
+
+  .timeline-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .month-card li {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-shell {
+    padding: 20px 12px 32px;
+  }
+
+  .panel,
+  .summary-card,
+  .month-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .month-card li {
+    flex-direction: column;
+    gap: 4px;
   }
 }
