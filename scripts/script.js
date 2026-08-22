@@ -1,63 +1,3 @@
-const STORAGE_KEY = 'personal-expenses-tracker';
-const GOAL_KEY = 'personal-expenses-goal';
-const SALARY_KEY = 'personal-expenses-salary';
-const CURRENT_ACCOUNT_KEY = 'personal-expenses-current-account';
-const USER_PROFILE_PREFIX = 'personal-expenses-user-';
-
-const getCurrentAccount = () => localStorage.getItem(CURRENT_ACCOUNT_KEY);
-
-const getProfileKey = (username) => `${USER_PROFILE_PREFIX}${username}`;
-
-const getCurrentProfile = () => {
-  const currentUser = getCurrentAccount();
-  if (!currentUser) {
-    return { goal: 1500, salary: 2500, transactions: [] };
-  }
-
-  const saved = JSON.parse(localStorage.getItem(getProfileKey(currentUser))) || {
-    goal: 1500,
-    salary: 2500,
-    transactions: []
-  };
-
-  return {
-    goal: Number(saved.goal) || 1500,
-    salary: Number(saved.salary) || 2500,
-    transactions: Array.isArray(saved.transactions) ? saved.transactions : []
-  };
-};
-
-const saveState = (transactions, goalValue, monthlySalary) => {
-  const currentUser = getCurrentAccount();
-  if (!currentUser) return;
-
-  localStorage.setItem(
-    getProfileKey(currentUser),
-    JSON.stringify({ goal: goalValue, salary: monthlySalary, transactions })
-  );
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-  localStorage.setItem(GOAL_KEY, String(goalValue));
-  localStorage.setItem(SALARY_KEY, String(monthlySalary));
-};
-
-const ensureActiveAccount = () => {
-  const isAuthPage =
-    window.location.pathname.endsWith('/accounts/account.html') ||
-    window.location.pathname.endsWith('/accounts/register.html') ||
-    window.location.pathname.endsWith('/accounts/session.html');
-
-  if (!isAuthPage && !getCurrentAccount()) {
-    window.location.href = 'accounts/account.html';
-    return false;
-  }
-
-  return true;
-};
-
-if (!ensureActiveAccount()) {
-  throw new Error('No active account. Redirecting to login.');
-}
 const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 const defaultProfile = { goal: 1500, salary: 2500, transactions: [] };
 
@@ -116,20 +56,12 @@ const ensureActiveAccount = async () => {
   return true;
 };
 
-const sampleTransactions = [
-  { id: 1, type: 'expense', name: 'Supermercado', category: 'Alimentación', amount: 420, date: '2026-08-20' },
-  { id: 2, type: 'expense', name: 'Transporte', category: 'Movilidad', amount: 180, date: '2026-08-18' },
-  { id: 3, type: 'saving', name: 'Ahorro mensual', category: 'Fondo', amount: 600, date: '2026-08-15' }
-];
-
 const formatCurrency = (value) =>
   new Intl.NumberFormat('es-MX', {
     style: 'currency',
     currency: 'MXN',
     minimumFractionDigits: 2
   }).format(value);
-
-const getTransactions = () => JSON.parse(localStorage.getItem(STORAGE_KEY)) || sampleTransactions;
 
 const getExpenseTotal = (transactions) =>
   transactions
@@ -437,7 +369,7 @@ const initSessionPage = async () => {
   if (totalGoal) totalGoal.textContent = formatCurrency(Number(profile.goal) || 1500);
 
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
       await supabaseClient.auth.signOut();
       window.location.href = 'account.html';
     });
