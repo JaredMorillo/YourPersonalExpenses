@@ -78,10 +78,13 @@ const getSalarySavingsTotal = (transactions) =>
     .filter((item) => item.type === 'saving' && item.source === 'salary')
     .reduce((sum, item) => sum + Number(item.amount), 0);
 
+const getSourceLabel = (source) => source === 'salary' ? 'Sueldo mensual' : 'Otro ingreso';
+
 const initIndexPage = async () => {
   const transactionForm = document.getElementById('transactionForm');
   const typeSelect = document.getElementById('type');
   const sourceSelect = document.getElementById('source');
+  const sourceLabel = document.getElementById('sourceLabel');
   const nameInput = document.getElementById('name');
   const categoryInput = document.getElementById('category');
   const amountInput = document.getElementById('amount');
@@ -110,7 +113,7 @@ const initIndexPage = async () => {
               <li class="transaction-item ${type}">
                 <div>
                   <strong>${item.name}</strong>
-                  <small>${item.category || 'Sin categoría'} · ${item.date} · ${item.type === 'saving' && item.source === 'salary' ? 'Sueldo' : 'Otro ingreso'}</small>
+                  <small>${item.category || 'Sin categoría'} · ${item.date} · ${getSourceLabel(item.source)}</small>
                 </div>
                 <div class="item-meta">
                   <span class="amount ${amountClass}">${sign}${formattedAmount}</span>
@@ -155,7 +158,7 @@ const initIndexPage = async () => {
 
   const toggleSourceField = () => {
     const isSaving = typeSelect.value === 'saving';
-    sourceSelect.closest('.field').style.display = isSaving ? 'grid' : 'none';
+    sourceLabel.textContent = isSaving ? 'Origen del ahorro' : 'Origen del gasto';
   };
 
   const render = () => {
@@ -183,7 +186,7 @@ const initIndexPage = async () => {
     transactions.unshift({
       id: Date.now(),
       type,
-      source: type === 'saving' ? source : 'expense',
+      source,
       name,
       category,
       amount,
