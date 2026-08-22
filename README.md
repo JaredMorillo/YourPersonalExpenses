@@ -12,7 +12,7 @@ Aplicacion web estatica para controlar gastos, ahorros, ingresos mensuales y met
 - Seguimiento visual de la meta de ahorro.
 - Historial mensual por usuario.
 - Sincronizacion de datos entre dispositivos.
-- Icono para favoritos y accesos en iOS.
+- Iconos para favoritos, accesos en iOS y pestañas fijadas en Safari.
 
 ## Tecnologias
 
@@ -34,6 +34,8 @@ Aplicacion web estatica para controlar gastos, ahorros, ingresos mensuales y met
 │   └── session.html            # Perfil e historial mensual
 ├── images/
 │   ├── favicon.ico
+│   ├── favicon.svg
+│   ├── safari-pinned-tab.svg
 │   └── apple-touch-icon.png
 ├── scripts/
 │   ├── script.js               # Logica principal
@@ -60,6 +62,14 @@ Aplicacion web estatica para controlar gastos, ahorros, ingresos mensuales y met
 7. Para permitir inicio de sesion con nombre de usuario, ejecuta tambien la funcion `get_email_by_username` incluida al final de `supabase-schema.sql`.
 
 Durante las pruebas puedes desactivar **Confirm email** en **Authentication > Providers > Email**. En produccion se recomienda mantener la confirmacion de correo activada.
+
+## Sincronizacion y actualizaciones
+
+- Los gastos y ahorros se guardan automaticamente en Supabase al registrarlos.
+- Los movimientos eliminados tambien se sincronizan automaticamente.
+- No es necesario actualizar la base de datos cada mes; los datos permanecen guardados y se pueden consultar desde cualquier dispositivo autenticado.
+- Las migraciones SQL solo se necesitan cuando cambia la estructura de la base de datos, por ejemplo al agregar tablas, columnas, funciones o politicas.
+- Actualmente no se pueden editar movimientos existentes desde la interfaz; se pueden registrar y eliminar.
 
 ## Ejecucion local
 
