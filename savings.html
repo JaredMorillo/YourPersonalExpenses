@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahorros</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Control financiero</p>
+          <h1>Ahorros</h1>
+        </div>
+
+        <div class="header-controls">
+          <a class="nav-link" href="index.html">Inicio</a>
+          <a class="nav-link" href="accounts/session.html">Mi Perfil</a>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="goal-box" style="margin-bottom: 20px;">
+          <label for="savingGoalInput">Meta de ahorros</label>
+          <div class="goal-input-row">
+            <input id="savingGoalInput" type="number" min="0" step="50" value="1500" />
+            <button type="button" id="updateGoalBtn" class="secondary-btn">Guardar meta</button>
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card income-card">
+            <span>Sueldo mensual</span>
+            <strong id="monthlyIncome">$0.00</strong>
+          </article>
+
+          <article class="stat-card savings-card">
+            <span>Ahorro total</span>
+            <strong id="totalSavings">$0.00</strong>
+          </article>
+
+          <article class="stat-card balance-card">
+            <span>Meta de ahorro</span>
+            <strong id="savingGoalValue">$0.00</strong>
+          </article>
+
+          <article class="stat-card expense-card">
+            <span>Falta por ahorrar</span>
+            <strong id="remainingGoal">$0.00</strong>
+          </article>
+        </section>
+
+        <section class="panel form-panel">
+          <h2>Usar ahorro</h2>
+          <form id="savingForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="savingName">Nombre</label>
+                <input id="savingName" type="text" placeholder="Ej. Pago de alquiler" required />
+              </div>
+
+              <div class="field">
+                <label for="savingCategory">Categoría</label>
+                <input id="savingCategory" type="text" placeholder="Ej. Vivienda" />
+              </div>
+
+              <div class="field">
+                <label for="savingAmount">Monto</label>
+                <input id="savingAmount" type="number" min="0" step="0.01" placeholder="0.00" required />
+              </div>
+
+              <div class="field">
+                <label for="savingDate">Fecha</label>
+                <input id="savingDate" type="date" required />
+              </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Usar ahorro</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="list-header">
+            <h2>Historial de ahorros</h2>
+            <span id="savingCount" class="badge">0</span>
+          </div>
+          <ul id="savingList" class="transaction-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/script.js"></script>
+  </body>
+</html>

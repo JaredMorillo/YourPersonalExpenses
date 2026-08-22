@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil</title>
+    <link rel="stylesheet" href="../styles/session.css" />
+  </head>
+  <body>
+    <div id="sessionRoot" class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Perfil personal</p>
+          <h1>Mi Perfil</h1>
+        </div>
+
+        <div class="header-actions">
+          <a class="nav-link" href="../index.html">Inicio</a>
+          <button id="logoutBtn" class="secondary-btn" type="button">Log Out</button>
+        </div>
+      </header>
+
+      <main class="profile-grid">
+        <section class="panel summary-panel">
+          <p class="label">Usuario</p>
+          <h2 id="sessionUser">Usuario</h2>
+          <div class="summary-cards">
+            <article class="summary-card income">
+              <span>Gastos totales</span>
+              <strong id="sessionTotalExpenses">$0.00</strong>
+            </article>
+            <article class="summary-card saving">
+              <span>Ahorros totales</span>
+              <strong id="sessionTotalSavings">$0.00</strong>
+            </article>
+            <article class="summary-card goal">
+              <span>Meta de ahorro</span>
+              <strong id="sessionGoal">$0.00</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel timeline-panel">
+          <div class="section-header">
+            <h3>Historial mensual</h3>
+          </div>
+          <div id="sessionMonths" class="timeline-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../scripts/script.js"></script>
+  </body>
+</html>

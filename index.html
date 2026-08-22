@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Presupuesto Personal</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Control financiero</p>
+          <h1>Gastos y ahorros</h1>
+        </div>
+
+        <div class="header-controls">
+          <a class="nav-link" href="savings.html">Meta de ahorros</a>
+          <a class="nav-link" href="accounts/session.html">Mi Perfil</a>
+
+          <div class="goal-box income-box">
+            <label for="salaryInput">Sueldo mensual</label>
+            <div class="goal-input-row">
+              <input id="salaryInput" type="number" min="0" step="50" value="2500" />
+              <button type="button" id="updateSalaryBtn" class="secondary-btn">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="stats-grid">
+          <article class="stat-card income-card">
+            <span>Ingreso mensual</span>
+            <strong id="monthlyIncome">$0.00</strong>
+          </article>
+
+          <article class="stat-card expense-card">
+            <span>Gastos totales</span>
+            <strong id="totalExpenses">$0.00</strong>
+          </article>
+
+          <article class="stat-card savings-card">
+            <span>Ahorros totales</span>
+            <strong id="totalSavings">$0.00</strong>
+          </article>
+
+          <article class="stat-card balance-card">
+            <span>Disponible</span>
+            <strong id="availableBalance">$0.00</strong>
+          </article>
+        </section>
+
+        <section class="goal-progress-panel">
+          <div class="goal-progress-header">
+            <h2>Meta de ahorro</h2>
+            <span id="goalStatus">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="goalProgressBar" class="progress-fill"></div>
+          </div>
+          <p id="goalMessage">Aún no has alcanzado tu meta.</p>
+        </section>
+
+        <section class="form-panel panel">
+          <h2>Registrar movimiento</h2>
+          <form id="transactionForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="type">Tipo</label>
+                <select id="type">
+                  <option value="expense">Gasto</option>
+                  <option value="saving">Ahorro</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="source">Origen del ahorro</label>
+                <select id="source">
+                  <option value="salary">Sueldo mensual</option>
+                  <option value="other">Otro ingreso</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="name">Nombre</label>
+                <input id="name" type="text" placeholder="Ej. Supermercado" required />
+              </div>
+
+              <div class="field">
+                <label for="category">Categoría</label>
+                <input id="category" type="text" placeholder="Ej. Alimentación" />
+              </div>
+
+              <div class="field">
+                <label for="amount">Monto</label>
+                <input id="amount" type="number" min="0" step="0.01" placeholder="0.00" required />
+              </div>
+
+              <div class="field">
+                <label for="date">Fecha</label>
+                <input id="date" type="date" required />
+              </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Agregar</button>
+          </form>
+        </section>
+
+        <section class="lists-grid">
+          <article class="panel">
+            <div class="list-header">
+              <h2>Gastos</h2>
+              <span id="expenseCount" class="badge">0</span>
+            </div>
+            <ul id="expenseList" class="transaction-list"></ul>
+          </article>
+
+          <article class="panel">
+            <div class="list-header">
+              <h2>Ahorros</h2>
+              <span id="savingCount" class="badge">0</span>
+            </div>
+            <ul id="savingList" class="transaction-list"></ul>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/script.js"></script>
+  </body>
+</html>

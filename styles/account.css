@@ -1,0 +1,105 @@
+:root {
+  --bg: #0f172a;
+  --panel: rgba(17, 24, 39, 0.85);
+  --panel-border: rgba(148, 163, 184, 0.18);
+  --text: #e5eefb;
+  --muted: #93a4bf;
+  --primary: #8b5cf6;
+  --primary-strong: #7c3aed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #111827 100%);
+  color: var(--text);
+}
+
+.auth-shell {
+  width: min(420px, calc(100% - 32px));
+}
+
+.auth-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 22px;
+  padding: 28px 24px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+}
+
+h1 {
+  margin: 0 0 20px;
+  font-size: 2rem;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.password-field input {
+  flex: 1;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  color: var(--text);
+  padding: 12px 14px;
+}
+
+.toggle-password {
+  min-width: 92px;
+  border: 1px solid rgba(196, 181, 253, 0.35);
+  border-radius: 12px;
+  padding: 11px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--text);
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+  color: white;
+}
+
+.link-row {
+  margin-top: 16px;
+  text-align: center;
+}
+
+a {
+  color: #c4b5fd;
+  text-decoration: none;
+}
+
+.message {
+  min-height: 24px;
+  margin: 10px 0 0;
+  color: #f8a5a5;
+}
