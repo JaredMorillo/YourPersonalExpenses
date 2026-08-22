@@ -50,13 +50,14 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../scripts/supabase-config.js"></script>
     <script>
-      const ACCOUNTS_KEY = 'personal-expenses-accounts';
-      const CURRENT_ACCOUNT_KEY = 'personal-expenses-current-account';
+      const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
-      if (localStorage.getItem(CURRENT_ACCOUNT_KEY)) {
-        window.location.href = '../index.html';
-      }
+      supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        if (session) window.location.href = '../index.html';
+      });
 
       const passwordInput = document.getElementById('password');
       const confirmPasswordInput = document.getElementById('confirmPassword');
@@ -72,7 +73,7 @@
         });
       });
 
-      document.getElementById('registerForm').addEventListener('submit', (event) => {
+      document.getElementById('registerForm').addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const username = document.getElementById('username').value.trim();
@@ -91,20 +92,19 @@
           return;
         }
 
-        const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || [];
-        const existingUser = accounts.some(
-          (item) => item.username.toLowerCase() === username.toLowerCase()
-        );
+        const { error } = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: { data: { username: username.toLowerCase() } }
+        });
 
-        if (existingUser) {
-          message.textContent = 'Ese usuario ya existe, intenta otro.';
+        if (error) {
+          message.textContent = error.message;
           return;
         }
 
-        accounts.push({ username: username.toLowerCase(), email, password });
-        localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-        localStorage.setItem(CURRENT_ACCOUNT_KEY, username.toLowerCase());
-        window.location.href = '../index.html';
+        message.textContent = 'Cuenta creada. Revisa tu correo para confirmar y después inicia sesión.';
+        document.getElementById('registerForm').reset();
       });
     </script>
   </body>

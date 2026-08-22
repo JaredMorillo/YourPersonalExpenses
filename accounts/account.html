@@ -14,8 +14,8 @@
 
         <form id="loginForm">
           <label>
-            Usuario
-            <input id="username" type="text" placeholder="Nombre de usuario" required />
+            Correo electrónico
+            <input id="username" type="email" placeholder="correo@ejemplo.com" required />
           </label>
 
           <label>
@@ -37,13 +37,14 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../scripts/supabase-config.js"></script>
     <script>
-      const ACCOUNTS_KEY = 'personal-expenses-accounts';
-      const CURRENT_ACCOUNT_KEY = 'personal-expenses-current-account';
+      const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
-      if (localStorage.getItem(CURRENT_ACCOUNT_KEY)) {
-        window.location.href = '../index.html';
-      }
+      supabaseClient.auth.getSession().then(({ data: { session } }) => {
+        if (session) window.location.href = '../index.html';
+      });
 
       const passwordInput = document.getElementById('password');
       const togglePasswordButton = document.querySelector('.toggle-password');
@@ -55,24 +56,20 @@
         togglePasswordButton.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
       });
 
-      document.getElementById('loginForm').addEventListener('submit', (event) => {
+      document.getElementById('loginForm').addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const username = document.getElementById('username').value.trim();
         const password = passwordInput.value;
         const message = document.getElementById('message');
 
-        const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || [];
-        const account = accounts.find(
-          (item) => item.username.toLowerCase() === username.toLowerCase() && item.password === password
-        );
+        const { error } = await supabaseClient.auth.signInWithPassword({ email: username, password });
 
-        if (!account) {
+        if (error) {
           message.textContent = 'Usuario o contraseña incorrectos.';
           return;
         }
 
-        localStorage.setItem(CURRENT_ACCOUNT_KEY, account.username.toLowerCase());
         window.location.href = '../index.html';
       });
     </script>

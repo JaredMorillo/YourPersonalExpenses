@@ -58,6 +58,63 @@ const ensureActiveAccount = () => {
 if (!ensureActiveAccount()) {
   throw new Error('No active account. Redirecting to login.');
 }
+const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+const defaultProfile = { goal: 1500, salary: 2500, transactions: [] };
+
+const getCurrentAccount = async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  return session ? {
+    id: session.user.id,
+    username: session.user.user_metadata.username || session.user.email
+  } : null;
+};
+
+const getCurrentProfile = async () => {
+  const account = await getCurrentAccount();
+  if (!account) return defaultProfile;
+
+  const [{ data: profile }, { data: transactions }] = await Promise.all([
+    supabaseClient.from('profiles').select('goal, salary').eq('id', account.id).single(),
+    supabaseClient.from('transactions').select('id, type, source, name, category, amount, date').eq('user_id', account.id).order('date', { ascending: false })
+  ]);
+
+  return {
+    goal: Number(profile?.goal) || defaultProfile.goal,
+    salary: Number(profile?.salary) || defaultProfile.salary,
+    transactions: Array.isArray(transactions) ? transactions : []
+  };
+};
+
+const saveState = async (transactions, goalValue, monthlySalary) => {
+  const account = await getCurrentAccount();
+  if (!account) return;
+
+  await supabaseClient.from('profiles').upsert({
+    id: account.id,
+    username: account.username,
+    goal: goalValue,
+    salary: monthlySalary
+  });
+
+  await supabaseClient.from('transactions').delete().eq('user_id', account.id);
+  if (transactions.length) {
+    await supabaseClient.from('transactions').insert(
+      transactions.map(({ id, ...transaction }) => ({ ...transaction, user_id: account.id }))
+    );
+  }
+};
+
+const ensureActiveAccount = async () => {
+  const isAuthPage = window.location.pathname.includes('/accounts/');
+  const account = await getCurrentAccount();
+
+  if (!isAuthPage && !account) {
+    window.location.href = 'accounts/account.html';
+    return false;
+  }
+
+  return true;
+};
 
 const sampleTransactions = [
   { id: 1, type: 'expense', name: 'Supermercado', category: 'Alimentación', amount: 420, date: '2026-08-20' },
@@ -89,7 +146,7 @@ const getSalarySavingsTotal = (transactions) =>
     .filter((item) => item.type === 'saving' && item.source === 'salary')
     .reduce((sum, item) => sum + Number(item.amount), 0);
 
-const initIndexPage = () => {
+const initIndexPage = async () => {
   const transactionForm = document.getElementById('transactionForm');
   const typeSelect = document.getElementById('type');
   const sourceSelect = document.getElementById('source');
@@ -99,7 +156,7 @@ const initIndexPage = () => {
   const dateInput = document.getElementById('date');
   const salaryInput = document.getElementById('salaryInput');
 
-  const profile = getCurrentProfile();
+  const profile = await getCurrentProfile();
   let goalValue = profile.goal;
   let monthlySalary = profile.salary;
   let transactions = profile.transactions;
@@ -234,7 +291,7 @@ const initIndexPage = () => {
   render();
 };
 
-const initSavingsPage = () => {
+const initSavingsPage = async () => {
   const savingForm = document.getElementById('savingForm');
   const savingGoalInput = document.getElementById('savingGoalInput');
   const savingNameInput = document.getElementById('savingName');
@@ -242,7 +299,7 @@ const initSavingsPage = () => {
   const savingAmountInput = document.getElementById('savingAmount');
   const savingDateInput = document.getElementById('savingDate');
 
-  const profile = getCurrentProfile();
+  const profile = await getCurrentProfile();
   let transactions = profile.transactions;
   let goalValue = profile.goal;
   let monthlySalary = profile.salary;
@@ -332,13 +389,13 @@ const initSavingsPage = () => {
   renderSavings();
 };
 
-const initSessionPage = () => {
-  const currentUser = getCurrentAccount();
+const initSessionPage = async () => {
+  const currentUser = await getCurrentAccount();
   if (!currentUser) {
     return;
   }
 
-  const profile = getCurrentProfile();
+  const profile = await getCurrentProfile();
   const monthGroups = new Map();
 
   const addToMonth = (date, item) => {
@@ -374,14 +431,14 @@ const initSessionPage = () => {
   const monthList = document.getElementById('sessionMonths');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  if (userName) userName.textContent = currentUser;
+  if (userName) userName.textContent = currentUser.username;
   if (totalExpenses) totalExpenses.textContent = formatCurrency(getExpenseTotal(profile.transactions));
   if (totalSavings) totalSavings.textContent = formatCurrency(getSavingsTotal(profile.transactions));
   if (totalGoal) totalGoal.textContent = formatCurrency(Number(profile.goal) || 1500);
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem(CURRENT_ACCOUNT_KEY);
+      await supabaseClient.auth.signOut();
       window.location.href = 'account.html';
     });
   }
@@ -419,14 +476,10 @@ const initSessionPage = () => {
   }
 };
 
-if (document.getElementById('transactionForm')) {
-  initIndexPage();
-}
+ensureActiveAccount().then((isActive) => {
+  if (!isActive) return;
 
-if (document.getElementById('savingForm')) {
-  initSavingsPage();
-}
-
-if (document.getElementById('sessionRoot')) {
-  initSessionPage();
-}
+  if (document.getElementById('transactionForm')) initIndexPage();
+  if (document.getElementById('savingForm')) initSavingsPage();
+  if (document.getElementById('sessionRoot')) initSessionPage();
+});
