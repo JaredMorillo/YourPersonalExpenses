@@ -15,8 +15,8 @@
 
         <form id="loginForm">
           <label>
-            Correo electrónico
-            <input id="username" type="email" placeholder="correo@ejemplo.com" required />
+            Usuario o correo electrónico
+            <input id="username" type="text" placeholder="maria o correo@ejemplo.com" required />
           </label>
 
           <label>
@@ -60,11 +60,26 @@
       document.getElementById('loginForm').addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const username = document.getElementById('username').value.trim();
+        const loginIdentifier = document.getElementById('username').value.trim();
         const password = passwordInput.value;
         const message = document.getElementById('message');
 
-        const { error } = await supabaseClient.auth.signInWithPassword({ email: username, password });
+        let email = loginIdentifier;
+
+        if (!loginIdentifier.includes('@')) {
+          const { data, error: usernameError } = await supabaseClient.rpc('get_email_by_username', {
+            login_username: loginIdentifier
+          });
+
+          if (usernameError || !data) {
+            message.textContent = 'Usuario o contraseña incorrectos.';
+            return;
+          }
+
+          email = data;
+        }
+
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
         if (error) {
           message.textContent = 'Usuario o contraseña incorrectos.';
