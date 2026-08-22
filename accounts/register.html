@@ -56,9 +56,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../scripts/supabase-config.js"></script>
     <script>
-      const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      const message = document.getElementById('message');
+      const hasSupabaseConfig =
+        window.SUPABASE_URL &&
+        window.SUPABASE_ANON_KEY &&
+        !window.SUPABASE_URL.includes('YOUR-PROJECT') &&
+        !window.SUPABASE_ANON_KEY.includes('YOUR_SUPABASE_ANON_KEY');
 
-      supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      const supabaseClient = hasSupabaseConfig
+        ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY)
+        : null;
+
+      if (!hasSupabaseConfig) {
+        message.textContent = 'Configura la URL del proyecto y la clave anon publica en scripts/supabase-config.js.';
+      }
+
+      supabaseClient?.auth.getSession().then(({ data: { session } }) => {
         if (session) window.location.href = '../index.html';
       });
 
@@ -83,8 +96,6 @@
         const email = document.getElementById('email').value.trim();
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
-        const message = document.getElementById('message');
-
         if (!username || !email || !password) {
           message.textContent = 'Completa todos los campos.';
           return;
@@ -95,19 +106,26 @@
           return;
         }
 
-        const { error } = await supabaseClient.auth.signUp({
-          email,
-          password,
-          options: { data: { username: username.toLowerCase() } }
-        });
+        if (!supabaseClient) return;
 
-        if (error) {
-          message.textContent = error.message;
-          return;
+        try {
+          const { error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: { data: { username: username.toLowerCase() } }
+          });
+
+          if (error) {
+            message.textContent = error.message;
+            return;
+          }
+
+          message.textContent = 'Cuenta creada. Revisa tu correo para confirmar y después inicia sesión.';
+          document.getElementById('registerForm').reset();
+        } catch (error) {
+          message.textContent = 'No se pudo conectar con Supabase. Comprueba la URL, la clave anon y tu conexión.';
+          console.error('Error al crear la cuenta:', error);
         }
-
-        message.textContent = 'Cuenta creada. Revisa tu correo para confirmar y después inicia sesión.';
-        document.getElementById('registerForm').reset();
       });
     </script>
   </body>
